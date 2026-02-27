@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keyboard Visualizer</title>
+<style>
+
+  /* Base styles */
+  html, body {
+    overflow: hidden;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    font-family: Arial, sans-serif;
+    color: #333;
+    user-select: none;
+    padding: 20px;
+  }
+
+  /* Box showing last pressed key */
+  .key-box {
+    background: #fff;
+    padding: 40px 80px;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    text-align: center;
+    margin-bottom: 40px;
+    width: 320px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .key-box.active {
+    transform: scale(1.1);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+  }
+
+  .key-box h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .key-display {
+    font-size: 60px;
+    font-weight: bold;
+    color: #2a5298;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .fade {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+
+  /* Keyboard container */
+  .keyboard {
+    background-color: #222;
+    padding: 16px 22px;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    display: inline-block;
+  }
+
+  /* Rows */
+  .row {
+    display: flex;
+    margin-bottom: 8px;
+  }
+
+  /* Individual keys */
+  .key-btn {
+    border: none;
+    border-radius: 5px;
+    margin-right: 5px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: default;
+    min-width: 36px;
+    height: 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    padding: 4px 6px;
+    box-sizing: border-box;
+    user-select: none;
+  }
+
+  .key-top {
+    font-size: 12px;
+    color: rgba(0,0,0,0.65);
+  }
+
+  .key-bottom {
+    font-size: 20px;
+  }
+
+  .space {
+    flex-grow: 1;
+    min-width: 200px;
+    height: 36px;
+    font-size: 20px;
+    padding: 0;
+    background-color: #d0d0d0;
+  }
+
+  .key-btn.active {
+    transform: scale(1.2);
+    box-shadow: 0 0 10px 3px rgba(255,255,255,0.8);
+    z-index: 10;
+  }
+
+  /* Color-coded keys */
+  .pink { background-color: #ff4da6; }
+  .yellow { background-color: #fffb4d; }
+  .green { background-color: #008000; color: #fff; }
+  .red { background-color: #f44336; color: #fff; }
+  .blue { background-color: #00bfff; color: #fff; }
+  .lightgreen { background-color: #c7ea46; }
+  .purple { background-color: #a080ff; }
+
+  /* Instructions */
+  .instructions {
+    margin-top: 30px;
+    font-size: 14px;
+    color: white;
+    text-align: center;
+    opacity: 0.9;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="key-box" id="keyBox" aria-live="polite" aria-atomic="true">
+  <h1>Press Any Key</h1>
+  <div class="key-display" id="keyDisplay">_</div>
+</div>
+
+<!-- Keyboard layout -->
+<div class="keyboard">
+  <!-- Row 1 -->
+  <div class="row">
+    <button class="key-btn pink" data-code="Backquote" data-key="`">
+      <div class="key-top">~</div>
+      <div class="key-bottom">`</div>
+    </button>
+    <button class="key-btn pink" data-code="Digit1" data-key="1">
+      <div class="key-top">!</div>
+      <div class="key-bottom">1</div>
+    </button>
+    <button class="key-btn yellow" data-code="Digit2" data-key="2">
+      <div class="key-top">@</div>
+      <div class="key-bottom">2</div>
+    </button>
+    <button class="key-btn green" data-code="Digit3" data-key="3">
+      <div class="key-top">#</div>
+      <div class="key-bottom">3</div>
+    </button>
+    <button class="key-btn red" data-code="Digit4" data-key="4">
+      <div class="key-top">$</div>
+      <div class="key-bottom">4</div>
+    </button>
+    <button class="key-btn red" data-code="Digit5" data-key="5">
+      <div class="key-top">%</div>
+      <div class="key-bottom">5</div>
+    </button>
+    <button class="key-btn blue" data-code="Digit6" data-key="6">
+      <div class="key-top">^</div>
+      <div class="key-bottom">6</div>
+    </button>
+    <button class="key-btn blue" data-code="Digit7" data-key="7">
+      <div class="key-top">&amp;</div>
+      <div class="key-bottom">7</div>
+    </button>
+    <button class="key-btn yellow" data-code="Digit8" data-key="8">
+      <div class="key-top">*</div>
+      <div class="key-bottom">8</div>
+    </button>
+    <button class="key-btn lightgreen" data-code="Digit9" data-key="9">
+      <div class="key-top">(</div>
+      <div class="key-bottom">9</div>
+    </button>
+    <button class="key-btn lightgreen" data-code="Digit0" data-key="0">
+      <div class="key-top">)</div>
+      <div class="key-bottom">0</div>
+    </button>
+    <button class="key-btn purple" data-code="Minus" data-key="-">
+      <div class="key-top">_</div>
+      <div class="key-bottom">-</div>
+    </button>
+    <button class="key-btn purple" data-code="Equal" data-key="=">
+      <div class="key-top">+</div>
+      <div class="key-bottom">=</div>
+    </button>
+    <button class="key-btn purple" data-code="Backspace" data-key="Backspace">Bksp</button>
+  </div>
+
+  <!-- Row 2 -->
+  <div class="row">
+    <button class="key-btn pink" data-code="Tab" data-key="Tab">Tab</button>
+    <button class="key-btn pink" data-code="KeyQ" data-key="Q">Q</button>
+    <button class="key-btn yellow" data-code="KeyW" data-key="W">W</button>
+    <button class="key-btn green" data-code="KeyE" data-key="E">E</button>
+    <button class="key-btn red" data-code="KeyR" data-key="R">R</button>
+    <button class="key-btn red" data-code="KeyT" data-key="T">T</button>
+    <button class="key-btn blue" data-code="KeyY" data-key="Y">Y</button>
+    <button class="key-btn blue" data-code="KeyU" data-key="U">U</button>
+    <button class="key-btn yellow" data-code="KeyI" data-key="I">I</button>
+    <button class="key-btn lightgreen" data-code="KeyO" data-key="O">O</button>
+    <button class="key-btn purple" data-code="KeyP" data-key="P">P</button>
+    <button class="key-btn purple" data-code="BracketLeft" data-key="[">
+      <div class="key-top">{</div>
+      <div class="key-bottom">[</div>
+    </button>
+    <button class="key-btn purple" data-code="BracketRight" data-key="]">
+      <div class="key-top">}</div>
+      <div class="key-bottom">]</div>
+    </button>
+    <button class="key-btn purple" data-code="Backslash" data-key="\\">
+      <div class="key-top">|</div>
+      <div class="key-bottom">\\</div>
+    </button>
+  </div>
+
+  <!-- Row 3 -->
+  <div class="row">
+    <button class="key-btn pink" data-code="CapsLock" data-key="Caps">Caps</button>
+    <button class="key-btn pink" data-code="KeyA" data-key="A">A</button>
+    <button class="key-btn yellow" data-code="KeyS" data-key="S">S</button>
+    <button class="key-btn green" data-code="KeyD" data-key="D">D</button>
+    <button class="key-btn red" data-code="KeyF" data-key="F">F</button>
+    <button class="key-btn red" data-code="KeyG" data-key="G">G</button>
+    <button class="key-btn blue" data-code="KeyH" data-key="H">H</button>
+    <button class="key-btn blue" data-code="KeyJ" data-key="J">J</button>
+    <button class="key-btn yellow" data-code="KeyK" data-key="K">K</button>
+    <button class="key-btn lightgreen" data-code="KeyL" data-key="L">L</button>
+    <button class="key-btn purple" data-code="Semicolon" data-key=";">
+      <div class="key-top">:</div>
+      <div class="key-bottom">;</div>
+    </button>
+    <button class="key-btn purple" data-code="Quote" data-key="'">
+      <div class="key-top">"</div>
+      <div class="key-bottom">'</div>
+    </button>
+    <button class="key-btn purple" data-code="Enter" data-key="Enter">Enter</button>
+  </div>
+
+  <!-- Row 4 -->
+  <div class="row">
+    <button class="key-btn pink" data-code="ShiftLeft" data-key="Shift">Shift</button>
+    <button class="key-btn pink" data-code="KeyZ" data-key="Z">Z</button>
+    <button class="key-btn yellow" data-code="KeyX" data-key="X">X</button>
+    <button class="key-btn green" data-code="KeyC" data-key="C">C</button>
+    <button class="key-btn red" data-code="KeyV" data-key="V">V</button>
+    <button class="key-btn red" data-code="KeyB" data-key="B">B</button>
+    <button class="key-btn blue" data-code="KeyN" data-key="N">N</button>
+    <button class="key-btn blue" data-code="KeyM" data-key="M">M</button>
+    <button class="key-btn lightgreen" data-code="Comma" data-key=",">
+      <div class="key-top">&lt;</div>
+      <div class="key-bottom">,</div>
+    </button>
+    <button class="key-btn lightgreen" data-code="Period" data-key=".">
+      <div class="key-top">&gt;</div>
+      <div class="key-bottom">.</div>
+    </button>
+    <button class="key-btn purple" data-code="Slash" data-key="/"> 
+      <div class="key-top">?</div>
+      <div class="key-bottom">/</div>
+    </button>
+    <button class="key-btn purple" data-code="ShiftRight" data-key="Shift">Shift</button>
+  </div>
+
+  <!-- Row 5 -->
+  <div class="row">
+    <button class="key-btn pink" data-code="ControlLeft" data-key="Ctrl">Ctrl</button>
+    <button class="key-btn pink" style="min-width: 36px;"></button>
+    <button class="key-btn yellow" data-code="AltLeft" data-key="Alt">Alt</button>
+    <button class="key-btn space" data-code="Space" data-key=" "> </button>
+    <button class="key-btn lightgreen" data-code="AltRight" data-key="Alt">Alt</button>
+    <button class="key-btn purple" data-code="ControlRight" data-key="Ctrl">Ctrl</button>
+  </div>
+
+</div>
+
+<p class="instructions">
+  Press any key on your keyboard. The key will highlight above and on the visual keyboard.
+</p>
+
+<script>
+const keyBox = document.getElementById('keyBox');
+const keyDisplay = document.getElementById('keyDisplay');
+const allKeys = document.querySelectorAll('.key-btn');
+
+const friendlyKeys = {
+  ' ': 'Space',
+  'Enter': '⏎',
+  'Backspace': '⌫',
+  'Shift': 'Shift',
+  'Control': 'Ctrl',
+  'Alt': 'Alt',
+  'CapsLock': 'Caps',
+  'Tab': 'Tab',
+  'Escape': 'Esc',
+  'ArrowUp': '↑',
+  'ArrowDown': '↓',
+  'ArrowLeft': '←',
+  'ArrowRight': '→'
+};
+
+document.addEventListener('keydown', (event) => {
+  if(event.repeat) return;
+
+  const scrollKeys = ['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'];
+  if(scrollKeys.includes(event.code)) event.preventDefault();
+
+  keyDisplay.classList.add('fade');
+  setTimeout(() => {
+    keyDisplay.textContent = friendlyKeys[event.key] || event.key;
+    keyDisplay.classList.remove('fade');
+  }, 100);
+
+  keyBox.classList.add('active');
+  setTimeout(() => keyBox.classList.remove('active'), 150);
+
+  const btn = Array.from(allKeys).find(k => k.dataset.code === event.code);
+  if(btn) {
+    btn.classList.add('active');
+    setTimeout(() => btn.classList.remove('active'), 150);
+  }
+});
+</script>
+
+</body>
+</html>
