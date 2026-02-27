@@ -1,3 +1,12 @@
+
+---
+
+![Keyboard Visualizer Screenshot](screenshot1.jfif)
+
+
+---
+
+
 # Keyboard Visualizer
 
 A **real-time interactive keyboard visualizer** built with HTML, CSS, and JavaScript.  
@@ -75,14 +84,6 @@ This visualizer assigns **different colors to keys based on finger placement**, 
 - Fully responsive design for different screen sizes  
 - Helps visualize proper finger placement for faster typing  
 
----
-
-## Screenshots
-
-![Keyboard Visualizer Screenshot](screenshot1.jfif)
-
-
----
 
 ## Live Demo
 
